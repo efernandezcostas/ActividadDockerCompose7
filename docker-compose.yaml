@@ -1,0 +1,43 @@
+name: "Actividad7"
+
+services:
+  mysql:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: bdjoomla
+      MYSQL_USER: enrique
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: admin
+    volumes:
+      - mysql_datos:/var/lib/mysql
+
+  joomla:
+    image: joomla
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      JOOMLA_DB_HOST: mysql
+      JOOMLA_DB_NAME: bdjoomla
+      JOOMLA_DB_USER: enrique
+      JOOMLA_DB_PASSWORD: admin
+    volumes:
+      - joomla_datos:/var/www/html
+    depends_on:
+      - mysql
+
+  php:
+    image: phpmyadmin
+    restart: always
+    ports:
+      - 8081:80
+    depends_on:
+      - mysql
+    environment:
+      PMA_ARBITRARY: 1
+      DB_HOST: mysql
+
+volumes:
+  mysql_datos:
+  joomla_datos:
